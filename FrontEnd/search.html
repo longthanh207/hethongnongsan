@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu nguồn gốc</title>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding-top: 80px; margin: 0; }
+        .logo-qr { background: #e8f5e9; color: #00a65a; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; margin-bottom: 20px;}
+        .search-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 450px; text-align: center; }
+        input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; margin-bottom: 20px; text-align: center; background: #f8f9fa; }
+        .btns { display: flex; gap: 10px; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; }
+        .btn-green { background: #00a65a; color: white; }
+        .btn-outline { background: transparent; border: 1px solid #00a65a; color: #00a65a; }
+        a { display: block; margin-top: 30px; color: #666; text-decoration: none; }
+
+        /* Khung Camera Popup */
+        #qr-reader-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+        #qr-reader { width: 100%; max-width: 400px; background: white; border-radius: 12px; overflow: hidden; }
+        .close-btn { margin-top: 20px; padding: 10px 30px; background: #ff4d4d; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="logo-qr">🔲</div>
+    <h2 style="margin:0 0 10px;">Truy xuất nguồn gốc</h2>
+    <p style="color:#666; margin-bottom:30px;">Nhập mã định danh hoặc quét QR trên bao bì.</p>
+
+    <div class="search-box">
+        <input type="text" id="batchId" placeholder="Nhập mã sản phẩm (VD: BAT-XXXXXX)">
+        <div class="btns">
+            <button class="btn btn-green" onclick="searchProduct()">Tra cứu</button>
+            <button class="btn btn-outline" onclick="openCamera()">📷 Quét mã QR</button>
+        </div>
+    </div>
+
+    <a href="login.html">← Quay lại trang đăng nhập</a>
+
+    <div id="qr-reader-modal">
+        <h3 style="color: white; margin-bottom: 10px;">Đưa mã QR vào khung hình</h3>
+        <div id="qr-reader"></div>
+        <button class="close-btn" onclick="closeCamera()">Đóng Camera</button>
+    </div>
+
+    <script>
+        let html5QrcodeScanner;
+
+        // 1. Tìm bằng cách nhập mã tay
+        function searchProduct() {
+            const id = document.getElementById('batchId').value.trim();
+            if(id) window.location.href = `track.html?id=${id}`;
+        }
+
+        // 2. Mở Camera quét mã
+        function openCamera() {
+            document.getElementById('qr-reader-modal').style.display = 'flex';
+            
+            // Khởi tạo máy quét
+            html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: {width: 250, height: 250} }, false);
+            
+            // Hàm chạy khi quét thành công
+            html5QrcodeScanner.render(function onScanSuccess(decodedText) {
+                // Đóng camera
+                closeCamera();
+                // Vì nội dung mã QR của chúng ta chính là đường link (http://127.0.0.1:5500/track.html?id=...), 
+                // nên ta chỉ việc điều hướng trình duyệt chạy thẳng vào link đó luôn.
+                window.location.href = decodedText; 
+            }, function onScanFailure(error) {
+                // Đang quét... bỏ qua lỗi rác
+            });
+        }
+
+        // 3. Tắt Camera
+        function closeCamera() {
+            document.getElementById('qr-reader-modal').style.display = 'none';
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear(); // Tắt hẳn đèn camera
+            }
+        }
+    </script>
+</body>
+</html>

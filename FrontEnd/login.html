@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập hệ thống</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; transition: background-color 0.3s; }
+        .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: center; margin: 20px; transition: 0.3s;}
+        
+        /* LINH VẬT & TIÊU ĐỀ */
+        .logo { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; margin: 0 auto 15px; transition: 0.3s;}
+        .theme-farmer .logo { background: #e8f5e9; color: #00a65a; }
+        .theme-admin .logo { background: #f3e8ff; color: #8b5cf6; }
+        
+        h2 { margin: 0 0 5px; color: #111; transition: 0.3s;}
+        p { color: #666; font-size: 14px; margin-bottom: 25px; transition: 0.3s;}
+        
+        /* FORM NHẬP LIỆU */
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { font-size: 13px; font-weight: bold; color: #333; display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; outline: none; transition: 0.2s; font-size: 15px;}
+        
+        .theme-farmer input:focus { border-color: #00a65a; box-shadow: 0 0 0 3px rgba(0,166,90,0.1);}
+        .theme-admin input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,0.1);}
+
+        /* NÚT BẤM CHÍNH */
+        .btn-main { width: 100%; padding: 14px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; margin-top: 10px;}
+        .theme-farmer .btn-main { background: #00a65a; }
+        .theme-farmer .btn-main:hover { background: #008f4d; }
+        .theme-admin .btn-main { background: #8b5cf6; }
+        .theme-admin .btn-main:hover { background: #7c3aed; }
+
+        /* CÁC NÚT PHỤ */
+        .register-link { margin-top: 15px; font-size: 14px; color: #666; transition: 0.3s;}
+        .theme-farmer .register-link a { color: #00a65a; font-weight: bold; text-decoration: none; }
+        .theme-admin .register-link { display: none; } /* Ẩn nút đăng ký khi ở chế độ Admin */
+
+        .divider { margin: 25px 0 20px; color: #999; font-size: 13px; position: relative; }
+        .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 20%; height: 1px; background: #eee; }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .btn-outline { width: 100%; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; background: transparent; margin-bottom: 10px;}
+        .btn-consumer { border: 1px solid #ff9800; color: #ff9800; }
+        .btn-consumer:hover { background: #fff3e0; }
+        .btn-admin-toggle { border: 1px solid #8b5cf6; color: #8b5cf6; }
+        .btn-admin-toggle:hover { background: #f3e8ff; }
+        
+        /* Ẩn hiện phần tử theo theme */
+        .theme-admin .consumer-section { display: none; }
+    </style>
+</head>
+<body class="theme-farmer" id="body-theme">
+
+    <div class="login-box">
+        <div class="logo" id="logo-icon">🍃</div>
+        <h2 id="form-title">Quản lý Nông sản</h2>
+        <p id="form-subtitle">Đăng nhập dành cho Nông dân</p>
+
+        <div class="form-group">
+            <label>Tài khoản Email</label>
+            <input type="email" id="email" placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <button class="btn-main" id="login-btn" onclick="handleLogin()">➔ Đăng nhập</button>
+
+        <div class="register-link">
+            Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a>
+        </div>
+
+        <div class="consumer-section">
+            <div class="divider">Hoặc</div>
+            <button class="btn-outline btn-consumer" onclick="window.location.href='search.html'">📥 Tra cứu nguồn gốc (Khách hàng)</button>
+        </div>
+        
+        <button class="btn-outline btn-admin-toggle" id="toggle-btn" onclick="toggleAdminMode()" style="margin-top: 10px;">
+            🛡️ Chuyển sang Cổng Quản trị viên
+        </button>
+    </div>
+
+    <script>
+        let isAdminMode = false;
+        
+        // --- CẤU HÌNH TÀI KHOẢN ADMIN TẠI ĐÂY ---
+        const ADMIN_EMAIL = "admin@gmail.com"; // Bạn nhớ khớp email này với database nhé
+        const ADMIN_PASS = "admintest"; 
+
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            const body = document.getElementById('body-theme');
+            
+            if (isAdminMode) {
+                // 1. ĐỔI SANG GIAO DIỆN ADMIN
+                body.className = 'theme-admin';
+                document.getElementById('logo-icon').innerText = '🛡️';
+                document.getElementById('form-title').innerText = 'Admin Central';
+                document.getElementById('form-subtitle').innerText = 'Đăng nhập Cổng Quản trị Hệ thống';
+                
+                // 2. Tự động điền Email và khóa lại
+                const emailInput = document.getElementById('email');
+                emailInput.value = ADMIN_EMAIL;
+                emailInput.readOnly = true; 
+                emailInput.style.backgroundColor = "#f8f9fa";
+                emailInput.style.color = "#8b5cf6";
+                emailInput.style.fontWeight = "bold";
+
+                // 3. Tự động điền luôn Mật khẩu
+                const passInput = document.getElementById('password');
+                passInput.value = ADMIN_PASS;
+                
+                // Focus sẵn vào nút Đăng nhập để Enter là vào
+                document.getElementById('login-btn').focus();
+                
+                document.getElementById('toggle-btn').innerText = '← Quay lại Cổng Nông dân';
+            } else {
+                // TRẢ VỀ GIAO DIỆN NÔNG DÂN
+                body.className = 'theme-farmer';
+                document.getElementById('logo-icon').innerText = '🍃';
+                document.getElementById('form-title').innerText = 'Quản lý Nông sản';
+                document.getElementById('form-subtitle').innerText = 'Đăng nhập dành cho Nông dân';
+                
+                // Xóa trống Form
+                const emailInput = document.getElementById('email');
+                emailInput.value = '';
+                emailInput.readOnly = false;
+                emailInput.style.backgroundColor = "white";
+                emailInput.style.color = "#333";
+                emailInput.style.fontWeight = "normal";
+                
+                document.getElementById('password').value = '';
+
+                document.getElementById('toggle-btn').innerHTML = '🛡️ Chuyển sang Cổng Quản trị viên';
+            }
+        }
+        
+        
+
+        async function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if(!email || !password) {
+                alert("Vui lòng nhập đầy đủ email và mật khẩu!");
+                return;
+            }
+
+            try {
+                const btn = document.getElementById('login-btn');
+                btn.innerText = "Đang xử lý...";
+                
+                const response = await fetch('http://localhost:5000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+
+                if(response.ok) {
+                    localStorage.setItem('user', JSON.stringify(result.data));
+                    // Điều hướng tự động dựa vào Role trả về từ DB
+                    if (result.data.role === 'ADMIN') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } else {
+                    alert(result.message); 
+                    btn.innerText = "➔ Đăng nhập";
+                }
+            } catch (error) {
+                alert("Lỗi kết nối Server! Vui lòng kiểm tra lại Backend.");
+                document.getElementById('login-btn').innerText = "➔ Đăng nhập";
+            }
+        }
+    </script>
+</body>
+</html>

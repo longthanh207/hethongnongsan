@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truy xuất nguồn gốc Nông sản</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center;}
+        .card { background: white; width: 100%; max-width: 400px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .image-box img { width: 100%; height: 250px; object-fit: cover; }
+        .content { padding: 20px; }
+        .title { color: #28a745; margin: 0 0 10px 0; font-size: 24px;}
+        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .info-row:last-child { border-bottom: none; }
+        .label { color: #666; font-weight: bold;}
+        .value { color: #333; font-weight: bold;}
+        .loading { text-align: center; padding: 50px; font-weight: bold; color: #666;}
+        
+        /* Ẩn nội dung khi chưa load xong dữ liệu */
+        #product-details, #error-message { display: none; }
+        #error-message { color: red; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="loading" class="loading">Đang tải thông tin lô hàng...</div>
+        
+        <div id="error-message">Không tìm thấy thông tin lô hàng này!</div>
+
+        <div id="product-details">
+            <div class="image-box">
+                <img id="p-image" src="" alt="Ảnh sản phẩm">
+            </div>
+            <div class="content">
+                <h2 class="title" id="p-name">Tên sản phẩm</h2>
+                
+                <div class="info-row">
+                    <span class="label">Mã lô hàng:</span>
+                    <span class="value" id="p-batch">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Mã Nông dân:</span>
+                    <span class="value" id="p-farmer">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Sản lượng:</span>
+                    <span class="value" id="p-quantity">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Giá bán:</span>
+                    <span class="value" id="p-price">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Ngày đóng gói:</span>
+                    <span class="value" id="p-date">...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="track.js"></script>
+</body>
+</html>

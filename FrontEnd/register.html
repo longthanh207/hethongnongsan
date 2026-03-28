@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - Quản lý Nông sản</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; margin: 20px;}
+        .logo { background: #e8f5e9; color: #00a65a; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; margin: 0 auto 15px; }
+        h2 { margin: 0 0 5px; color: #111; }
+        p { color: #666; font-size: 14px; margin-bottom: 25px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { font-size: 13px; font-weight: bold; color: #333; display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; outline: none; transition: 0.2s;}
+        input:focus { border-color: #00a65a; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; margin-top: 10px;}
+        .btn-green { background: #00a65a; }
+        .btn-green:hover { background: #008f4d; }
+        .footer-text { margin-top: 25px; font-size: 14px; color: #666;}
+        .footer-text a { color: #00a65a; font-weight: bold; text-decoration: none;}
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <div class="logo">📝</div>
+        <h2>Tạo tài khoản mới</h2>
+        <p>Đăng ký để trở thành Nông dân trên hệ thống</p>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Họ và Tên</label>
+                <input type="text" id="fullName" placeholder="VD: Nguyễn Văn A" required>
+            </div>
+            <div class="form-group">
+                <label>Email liên hệ</label>
+                <input type="email" id="email" placeholder="example@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label>Xác nhận mật khẩu</label>
+                <input type="password" id="confirmPassword" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-green">Đăng ký tài khoản</button>
+        </form>
+
+        <div class="footer-text">
+            Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Chặn tải lại trang
+            
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Kiểm tra mật khẩu khớp nhau
+            if (password !== confirmPassword) {
+                alert("Mật khẩu xác nhận không khớp!");
+                return;
+            }
+
+            try {
+                // Đổi chữ trên nút để báo đang tải
+                const btn = e.target.querySelector('button');
+                btn.innerText = "Đang xử lý...";
+                btn.disabled = true;
+
+                // GỌI API ĐĂNG KÝ
+                const response = await fetch('http://localhost:5000/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, email, password }) // Role tự động là Nông dân
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Đăng ký thành công! Đang chuyển về trang Đăng nhập...");
+                    window.location.href = 'login.html'; // Tự động văng về trang Đăng nhập
+                } else {
+                    alert(result.message); // Báo lỗi (ví dụ: Email đã tồn tại)
+                }
+            } catch (error) {
+                alert("Không thể kết nối đến Server! Vui lòng kiểm tra xem Backend đã chạy chưa.");
+            } finally {
+                // Phục hồi lại nút bấm nếu có lỗi
+                const btn = e.target.querySelector('button');
+                btn.innerText = "Đăng ký tài khoản";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
