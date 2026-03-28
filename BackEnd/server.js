@@ -1,8 +1,7 @@
 const express = require('express');
-const cors = require('cors');
-app.use(cors()); // Cho phép mọi nguồn truy cập vào API
 const mongoose = require('mongoose');
 const cors = require('cors');
+app.use(cors()); // Cho phép mọi nguồn truy cập vào API
 const path = require('path');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
