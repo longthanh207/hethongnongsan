@@ -192,7 +192,7 @@
         async function loadUserData() {
             try {
                 // Tạm thời gọi API lấy Nông dân của bản trước (Có thể sửa API backend sau để lấy all user)
-                const response = await fetch('http://localhost:5000/api/v1/admin/users');
+                const response = await fetch('https://hethongnongsan.onrender.com/api/v1/admin/users');
                 const result = await response.json();
                 
                 let userHtml = '';
@@ -245,7 +245,7 @@
         // 4. TẢI DỮ LIỆU DUYỆT HÀNG (Cho Tab Tổng quan)
         async function loadApprovalData() {
             try {
-                const response = await fetch('http://localhost:5000/api/v1/admin/products/pending');
+                const response = await fetch('https://hethongnongsan.onrender.com/api/v1/admin/products/pending');
                 const result = await response.json();
                 
                 const listContainer = document.getElementById('pending-list');
@@ -260,7 +260,7 @@
                     listContainer.innerHTML += `
                         <div class="approval-card">
                             <div style="display: flex; align-items: center;">
-                                <img src="http://localhost:5000${p.productImageUrl}" style="width:60px; height:60px; border-radius:8px; margin-right:15px; object-fit:cover;">
+                                <img src="https://hethongnongsan.onrender.com${p.productImageUrl}" style="width:60px; height:60px; border-radius:8px; margin-right:15px; object-fit:cover;">
                                 <div>
                                     <h4 style="margin: 0 0 5px; font-size: 16px;">${p.name}</h4>
                                     <p style="margin: 0; color: #666; font-size: 13px;">Nông dân: ${p.farmerId} | Mã: ${p.batchSerialNumber}</p>
@@ -283,7 +283,7 @@
         async function updateStatus(productId, newStatus) {
             if(!confirm(`Xác nhận ${newStatus === 'APPROVED' ? 'DUYỆT' : 'TỪ CHỐI'} lô hàng này?`)) return;
             try {
-                const response = await fetch(`http://localhost:5000/api/v1/admin/products/${productId}/status`, {
+                const response = await fetch(`https://hethongnongsan.onrender.com/api/v1/admin/products/${productId}/status`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: newStatus })

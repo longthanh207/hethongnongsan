@@ -144,7 +144,7 @@
 
         async function loadDashboard() {
             try {
-                const res = await fetch('http://localhost:5000/api/v1/products');
+                const res = await fetch('https://hethongnongsan.onrender.com/api/v1/products');
                 const result = await res.json();
                 const products = result.data;
 
@@ -167,13 +167,13 @@
                     gridHtml += `
                         <div class="product-card">
                             <span class="badge ${badgeClass}">${statusLabel}</span>
-                            <img src="http://localhost:5000${p.productImageUrl}">
+                            <img src="https://hethongnongsan.onrender.com${p.productImageUrl}">
                             <div class="card-body">
                                 <h4 style="margin:0;">${p.name}</h4>
                                 <p style="font-size:13px; color:#666; margin: 5px 0;">SL: ${p.quantity} ${p.unit} | Mã: ${p.batchSerialNumber}</p>
                                 <div style="display:flex; justify-content: space-between; align-items: center; margin-top:10px;">
                                     <span style="font-weight:bold; color:#00a65a;">${p.price.toLocaleString()}đ</span>
-                                    ${p.status === 'APPROVED' ? `<img src="http://localhost:5000${p.qrCodeImageUrl}" width="30">` : ''}
+                                    ${p.status === 'APPROVED' ? `<img src="https://hethongnongsan.onrender.com${p.qrCodeImageUrl}" width="30">` : ''}
                                 </div>
                             </div>
                         </div>
@@ -191,7 +191,7 @@
             formData.append('farmerName', user.fullName);
 
             try {
-                const res = await fetch('http://localhost:5000/api/v1/farmer/products', {
+                const res = await fetch('https://hethongnongsan.onrender.com/api/v1/farmer/products', {
                     method: 'POST',
                     body: formData
                 });
